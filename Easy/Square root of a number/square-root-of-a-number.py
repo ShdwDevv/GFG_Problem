@@ -4,7 +4,9 @@
 #Complete this function
 class Solution:
     def floorSqrt(self, x): 
-        return int(math.sqrt(x))
+        if x == 0 or x == 1:return x
+        sqr = x**0.5
+        return int(sqr)
 
 
 #{ 
