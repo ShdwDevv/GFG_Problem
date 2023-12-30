@@ -1,8 +1,21 @@
 class Solution:
-    def thirdLargest(self,a, n):
-        if n < 3 : return -1
-        a.sort()
-        return a[-3]
+    def thirdLargest(se1lf,a, n):
+        if len(a) < 3:
+            return -1
+        first = None
+        second = float("-inf")
+        third = float("-inf")
+        for val in a:
+            if first == None or  val > first:
+                third = second
+                second = first
+                first = val
+            elif second == None or val > second:
+                third = second
+                second = val
+            elif third == None or val > third:
+                third = val
+        return third
 
 
 #{ 
