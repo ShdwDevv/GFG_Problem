@@ -42,29 +42,40 @@ class Solution {
     // Function to detect cycle in an undirected graph.
     public boolean isCycle(int V, ArrayList<ArrayList<Integer>> adj) {
         boolean[] visit = new boolean[V];
+        
         for(int i = 0 ; i < V ; i++){
             if(!visit[i]){
-                if(checkForCycle(i,V,adj,visit)) return true;
+                if(checkForCycle(i,V,adj,visit,-1)) return true;
             }
         }
         return false;
         
     }
-    public boolean checkForCycle(int idx,int V,ArrayList<ArrayList<Integer>> adj,boolean[] visit){
+    // public boolean checkForCycle(int idx,int V,ArrayList<ArrayList<Integer>> adj,boolean[] visit){
+    //     visit[idx] = true;
+    //     Queue<Pair> q = new LinkedList<>();
+    //     q.add(new Pair(idx,-1));
+    //     while(!q.isEmpty()){
+    //         int node = q.peek().curr;
+    //         int prev = q.peek().prev;
+    //         q.remove();
+    //         for(int v : adj.get(node)){
+    //             if(!visit[v]){
+    //               visit[v] = true;
+    //               q.add(new Pair(v,node));
+    //             } 
+    //             else if(prev != v) return true;
+    //         }
+    //     }
+    //     return false;
+    // }
+    public boolean checkForCycle(int idx,int V,ArrayList<ArrayList<Integer>> adj,boolean[] visit,int parent){
         visit[idx] = true;
-        Queue<Pair> q = new LinkedList<>();
-        q.add(new Pair(idx,-1));
-        while(!q.isEmpty()){
-            int node = q.peek().curr;
-            int prev = q.peek().prev;
-            q.remove();
-            for(int v : adj.get(node)){
-                if(!visit[v]){
-                  visit[v] = true;
-                  q.add(new Pair(v,node));
-                } 
-                else if(prev != v) return true;
+        for(int v : adj.get(idx)){
+            if(!visit[v]){
+                if(checkForCycle(v,V,adj,visit,idx)) return true;
             }
+            else if(parent != v) return true;
         }
         return false;
     }
