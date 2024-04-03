@@ -60,28 +60,54 @@ class Main {
 
 class Solution
 {   
-    static void dfs(int idx,ArrayList<ArrayList<Integer>> adj,boolean[] visit,Stack<Integer> stack){
-        visit[idx] = true;
-        for(int n : adj.get(idx)){
-            if(!visit[n]){
-                dfs(n,adj,visit,stack);
-            }
-        }
-        stack.push(idx);
-    }
+    // static void dfs(int idx,ArrayList<ArrayList<Integer>> adj,boolean[] visit,Stack<Integer> stack){
+    //     visit[idx] = true;
+    //     for(int n : adj.get(idx)){
+    //         if(!visit[n]){
+    //             dfs(n,adj,visit,stack);
+    //         }
+    //     }
+    //     stack.push(idx);
+    // }
+    // static int[] topoSort(int V, ArrayList<ArrayList<Integer>> adj) 
+    // {
+    //     boolean[] visited = new boolean[V];
+    //     Stack<Integer> stack = new Stack<>();
+    //     for(int i = 0 ; i < V ; i++){
+    //         if(!visited[i]){
+    //             dfs(i,adj,visited,stack);
+    //         }
+    //     }
+    //     int[] res = new int[V];
+    //     int i=0;
+    //     while(!stack.isEmpty()){
+    //         res[i++] = stack.pop();
+    //     }
+    //     return res;
+    // }
     //Function to return list containing vertices in Topological order. 
     static int[] topoSort(int V, ArrayList<ArrayList<Integer>> adj) 
     {
-        boolean[] visited = new boolean[V];
-        Stack<Integer> stack = new Stack<>();
+        int[] inDegree = new int[V];
         for(int i = 0 ; i < V ; i++){
-            if(!visited[i]){
-                dfs(i,adj,visited,stack);
+            for(int n : adj.get(i)){
+                inDegree[n]++;
             }
         }
+        Queue<Integer> q = new LinkedList<>();
+        for(int i = 0;i < V;i++){
+            if(inDegree[i] ==0) q.add(i);
+        }
         int[] res = new int[V];
-        for(int i = 0 ; i < V ; i++){
-            res[V-i-1] = stack.get(i);
+        int idx= 0 ;
+        while(!q.isEmpty()){
+            int node = q.peek();
+            q.remove();
+            res[idx++] = node;
+            for(int n : adj.get(node)){
+                inDegree[n]--;
+                if(inDegree[n] == 0) q.add(n);
+            }
         }
         return res;
     }
