@@ -32,24 +32,49 @@ class DriverClass {
 /*Complete the function below*/
 
 class Solution {
-    boolean dfs(int idx, int[] visitAndPath, ArrayList<ArrayList<Integer>> adj) {
-    visitAndPath[idx] = 2; // for visit and path
-    for (int n : adj.get(idx)) {
-        if (visitAndPath[n] == 0) {
-            if (dfs(n, visitAndPath, adj)) return true;
-        } else if (visitAndPath[n] == 2) return true;
-    }
-    visitAndPath[idx] = 1; // backtrack to 1 for only visit
-    return false;
-}
-    // Function to detect cycle in a directed graph.
+//     boolean dfs(int idx, int[] visitAndPath, ArrayList<ArrayList<Integer>> adj) {
+//     visitAndPath[idx] = 2; // for visit and path
+//     for (int n : adj.get(idx)) {
+//         if (visitAndPath[n] == 0) {
+//             if (dfs(n, visitAndPath, adj)) return true;
+//         } else if (visitAndPath[n] == 2) return true;
+//     }
+//     visitAndPath[idx] = 1; // backtrack to 1 for only visit
+//     return false;
+// }
+//     // Function to detect cycle in a directed graph.
+//     public boolean isCyclic(int V, ArrayList<ArrayList<Integer>> adj) {
+//       int[] visitAndPath = new int[V];
+//     for (int i = 0; i < V; i++) {
+//         if (visitAndPath[i] == 0) {
+//             if (dfs(i, visitAndPath, adj)) return true;
+//         }
+//     }
+//     return false;
+//     }
     public boolean isCyclic(int V, ArrayList<ArrayList<Integer>> adj) {
-       int[] visitAndPath = new int[V];
-    for (int i = 0; i < V; i++) {
-        if (visitAndPath[i] == 0) {
-            if (dfs(i, visitAndPath, adj)) return true;
+        int[] inOrder = new int[V];
+        for(int i = 0 ; i < V ; i++){
+            for(int n : adj.get(i)){
+                inOrder[n]++;
+            }
         }
-    }
-    return false;
+        Queue<Integer> q = new LinkedList<>();
+        for(int i = 0 ; i < V;i++){
+            if(inOrder[i] == 0){
+                q.add(i);
+            }
+        }
+        List<Integer> res = new LinkedList<>();
+        while(!q.isEmpty()){
+            int node = q.peek();
+            q.remove();
+            res.add(node);
+            for(int n : adj.get(node)){
+                inOrder[n]--;
+                if(inOrder[n] == 0) q.add(n);
+            }
+        }
+        return adj.size() != res.size();
     }
 }
