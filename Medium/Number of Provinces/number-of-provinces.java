@@ -30,37 +30,66 @@ class GFG {
 
 
 //User function Template for Java
-
-class Solution {
-    static void dfs(int i,boolean[] visited,ArrayList<ArrayList<Integer>> adj){
-        visited[i] = true;
-        
-        for(Integer u : adj.get(i)){
-            if(!visited[u]) dfs(u,visited,adj);
+class DisjointSet{
+    List<Integer> rank = new ArrayList<>();
+    List<Integer> parent = new ArrayList<>();
+    List<Integer> size = new ArrayList<>();
+    public DisjointSet(int n){
+        for(int i = 0 ; i <= n;i++){
+            rank.add(0);
+            parent.add(i);
+            size.add(1);
         }
     }
+    public int findUltimateParent(int u){
+        if(parent.get(u) == u) return u;
+        int ultPar = findUltimateParent(parent.get(u));
+        parent.set(u,ultPar);
+        return parent.get(u);
+    }
+    public void unionByRank(int u,int v){
+        int ul_u = findUltimateParent(u);
+        int ul_v = findUltimateParent(v);
+        if(ul_u == ul_v) return;
+        if(rank.get(ul_u) < rank.get(ul_v)){
+            parent.set(ul_u,ul_v);
+        }
+        else if(rank.get(ul_v) < rank.get(ul_u)){
+            parent.set(ul_v,ul_u);
+        }
+        else{
+            parent.set(ul_v,ul_u);
+            rank.set(ul_v,rank.get(ul_u)+1);
+        }
+    }
+    public void unionBySize(int u,int v){
+        int ul_u = findUltimateParent(u);
+        int ul_v = findUltimateParent(v);
+        if(ul_u == ul_v) return;
+        if(size.get(ul_u) < size.get(ul_v)){
+            parent.set(ul_u,ul_v);
+            size.set(ul_v,size.get(ul_v)+size.get(ul_u));
+        }
+        else{
+            parent.set(ul_v,ul_u);
+            size.set(ul_u,size.get(ul_u) + size.get(ul_v));
+        }
+    }
+}
+
+class Solution {
     static int numProvinces(ArrayList<ArrayList<Integer>> adj, int V) {
-        // Convert matrix list to List
-        ArrayList<ArrayList<Integer>> adjL = new ArrayList<>();
-        for(int i = 0;i < adj.size();i++){
-            adjL.add(new ArrayList<>());
-        }
-        for(int i = 0; i< adj.size();i++){
-            for(int j = 0;j < adj.get(0).size();j++){
-                if(adj.get(i).get(j) == 1 && i != j) {
-                    adjL.get(i).add(j);
-                    adjL.get(j).add(i);
-                }
+        // code here
+        DisjointSet ds = new DisjointSet(V);
+        for(int i = 0 ; i < V;i++){
+            for(int j = 0 ; j < adj.get(i).size();j++){
+                if(adj.get(i).get(j) == 1) ds.unionBySize(i,j);
             }
         }
-        boolean[] visited = new boolean[V];
-        int count = 0;
-        for(int i = 0;i < V;i++){
-            if(!visited[i]){
-                count++;
-                dfs(i,visited,adjL);
-            }
+        int cnt = 0;
+        for(int i = 0 ; i < V;i++){
+            if(ds.parent.get(i) == i) cnt++;
         }
-        return count;
+        return cnt;
     }
 };
