@@ -26,30 +26,29 @@ class GFG {
 // } Driver Code Ends
 
 
+
+
 // User function Template for Java
 
 class Solution {
-    public int recur(int[][] arr,int day,int last,int[][] dp){
-        int maxVal = Integer.MIN_VALUE;
-        if(day == 0){
-            for(int i = 0; i < 3;i++){
-                if(i != last) 
-                    maxVal = Math.max(maxVal,arr[day][i]);
-            }
-            return maxVal;
-        }
-        if(dp[day][last] != -1) return dp[day][last];
-        for(int i = 0; i < 3;i++){
-            if(i != last){
-                int points = arr[day][i] + recur(arr,day-1,i,dp);
-                maxVal = Math.max(maxVal,points);
-            }
-        }
-        return dp[day][last] =  maxVal;
-    }
     public int maximumPoints(int arr[][], int N) {
-        int[][] dp = new int[N][4];
-        for(int i = 0; i < N;i++) Arrays.fill(dp[i],-1);
-        return recur(arr,N-1,3,dp);
+        int[] prev = new int[4];
+        prev[0] = Math.max(arr[0][1],arr[0][2]);
+        prev[1] = Math.max(arr[0][0],arr[0][2]);
+        prev[2] = Math.max(arr[0][1],arr[0][0]);
+        prev[3] = Math.max(arr[0][0],Math.max(arr[0][1],arr[0][2]));
+        for(int day = 1; day < N;day++){
+            int[] temp = new int[4];
+            for(int last = 0; last < 4;last++){
+                for(int task = 0; task < 3;task++){
+                    if(task != last){
+                        int points = arr[day][task] + prev[task]; 
+                        temp[last] = Math.max(points,temp[last]);
+                    }
+                }
+            }
+            prev = temp;
+        }
+        return prev[3];
     }
 }
